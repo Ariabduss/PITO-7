@@ -5,35 +5,305 @@
   <title>PITO 7 - Growtopia Tools</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
       color: #333;
       padding: 20px;
-    }header {
-  background: #ff008a;
-  color: white;
-  padding: 15px 15px;
-  text-align: center;
-  border-radius: 7px;
-  margin-bottom: 20px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
+    }
+    header {
+      background: linear-gradient(135deg, #ff008a, #bc0066);
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(255, 0, 138, 0.2);
+    }
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+    .search-bar {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    input[type="text"]:focus {
+      border-color: #ff008a;
+      box-shadow: 0 4px 10px rgba(255, 0, 138, 0.1);
+    }
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .item {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid #eaeaea;
+    }
+    .item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    .item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #222;
+    }
+    .price { 
+      font-weight: bold; 
+      color: #2e7d32; 
+      font-size: 1.1rem;
+    }
+    .item-detail {
+      display: none;
+      margin-top: 10px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    .back-btn {
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .back-btn:hover {
+      background: #d5d5d5;
+    }
+    .chart-container {
+      position: relative;
+      margin: 20px auto;
+      height: 250px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .market-section {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    .market-section h3 {
+      margin-bottom: 12px;
+      color: #444;
+    }
+    #marketList li {
+      padding: 10px 15px;
+      background: #f9f9f9;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border-left: 4px solid #ff008a;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
 
-.search-bar {
-  margin-bottom: 20px;
-  text-align: center;
-}
+  <header>
+    <h1>PITO 7</h1>
+    <p>Temukan harga dan informasi item Growtopia</p>
+  </header>
 
-input[type="text"] {
-  width: 60%;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-}
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Cari item...">
+  </div>
 
+  <div class="item-grid" id="itemGrid"></div>
+
+  <div class="item-detail" id="itemDetail">
+    <button class="back-btn" onclick="closeDetail()">← Kembali</button>
+    <h2 id="detailTitle" style="margin-bottom: 5px;"></h2>
+    <p class="price" id="detailPrice" style="margin-bottom: 20px;"></p>
+    
+    <div class="chart-container">
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="market-section">
+      <h3>Rekomendasi Pasar / World Toko</h3>
+      <ul id="marketList"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Data dummy item
+    const items = [
+      {
+        name: "Wooden Platform Seed",
+        price: "70/WL",
+        trend: [70, 72, 68, 70],
+        market: [
+          { name: "PITOStore", price: "72/WL" },
+          { name: "GrowShop", price: "70/WL" }
+        ]
+      },
+      {
+        name: "Fish Tank Block",
+        price: "100/WL",
+        trend: [95, 100, 100, 105],
+        market: []
+      },
+      {
+        name: "Lava Seed",
+        price: "200/WL",
+        trend: [210, 205, 200, 200],
+        market: [
+          { name: "HotItems", price: "195/WL" }
+        ]
+      }
+    ];
+
+    const itemGrid = document.getElementById("itemGrid");
+    const searchInput = document.getElementById("search");
+    const itemDetail = document.getElementById("itemDetail");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailPrice = document.getElementById("detailPrice");
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    
+    let priceChart;
+    let currentFilteredItems = [...items]; // Menyimpan list item yang sedang aktif (ter-filter)
+
+    // Fungsi menampilkan list item di grid
+    function displayItems(filteredItems) {
+      currentFilteredItems = filteredItems; // update state item aktif
+      itemGrid.innerHTML = '';
+      
+      if(filteredItems.length === 0) {
+        itemGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #777;">Item tidak ditemukan.</p>`;
+        return;
+      }
+
+      filteredItems.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <h3>${item.name}</h3>
+          <p class="price">${item.price}</p>
+        `;
+        // Gunakan index dari parameter loop ini
+        div.onclick = () => showDetail(index);
+        itemGrid.appendChild(div);
+      });
+    }
+
+    // Fungsi update list toko/pasar
+    function updateMarketList(item) {
+      const marketList = document.getElementById("marketList");
+      marketList.innerHTML = '';
+      
+      if (!item.market || item.market.length === 0) {
+        marketList.innerHTML = '<li style="list-style: none; color: #777; border-left: 4px solid #ccc !important;">Belum ada data toko alternatif untuk item ini.</li>';
+        return;
+      }
+
+      item.market.forEach(entry => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${entry.name}</strong> menjual seharga <span class="price">${entry.price}</span>`;
+        marketList.appendChild(li);
+      });
+    }
+
+    // Fungsi menampilkan halaman detail
+    function showDetail(index) {
+      // Ambil data dari currentFilteredItems agar pas dengan hasil pencarian
+      const item = currentFilteredItems[index];
+      
+      detailTitle.textContent = item.name;
+      detailPrice.textContent = `Harga Saat Ini: ${item.price}`;
+      
+      // Sembunyikan pencarian dan grid, tampilkan detail
+      document.querySelector('.search-bar').style.display = 'none';
+      itemGrid.style.display = 'none';
+      itemDetail.style.display = 'block';
+      
+      updateMarketList(item);
+
+      // Reset Chart jika sudah ada sebelumnya agar tidak tumpang tindih
+      if (priceChart) priceChart.destroy();
+      
+      // Mengonstruksi label tanggal dummy sejumlah data trend
+      const labels = item.trend.map((_, i) => `Update ${i+1}`);
+
+      priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Riwayat Harga',
+            data: item.trend,
+            borderColor: '#ff008a',
+            backgroundColor: 'rgba(255, 0, 138, 0.05)',
+            fill: true,
+            tension: 0.2,
+            borderWidth: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#ff008a'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+              grid: { color: '#f0f0f0' }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // Fungsi tombol kembali
+    function closeDetail() {
+      itemDetail.style.display = 'none';
+      document.querySelector('.search-bar').style.display = 'block';
+      itemGrid.style.display = 'grid';
+    }
+
+    // Event listener untuk kolom pencarian
+    searchInput.addEventListener("input", () => {
+      const keyword = searchInput.value.toLowerCase();
+      const filtered = items.filter(i => i.name.toLowerCase().includes(keyword));
+      displayItems(filtered);
+    });
+
+    // Jalankan aplikasi pertama kali
+    displayItems(items);
+  </script>
+</body>
+</html>
 .item-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
