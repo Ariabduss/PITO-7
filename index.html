@@ -8,32 +8,37 @@
   
   <style>
     /* ==========================================================================
-       1. CSS STYLING (Mengatur Tampilan, Warna, dan Layout Agar Rapi)
+       1. STYLE CSS (Mengatur Tampilan Aplikasi Agar Modern & Responsif)
        ========================================================================== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f4f6f9;
       color: #333;
       padding: 20px;
     }
     
+    .container { max-width: 900px; margin: 0 auto; }
+
     /* Header Utama */
     header {
       background: linear-gradient(135deg, #ff008a, #bc0066);
       color: white;
-      padding: 25px 15px;
+      padding: 30px 15px;
       text-align: center;
-      border-radius: 12px;
+      border-radius: 16px;
       margin-bottom: 25px;
-      box-shadow: 0 4px 12px rgba(255, 0, 138, 0.2);
+      box-shadow: 0 4px 15px rgba(255, 0, 138, 0.25);
     }
+    header h1 { font-size: 2.5rem; letter-spacing: 1px; margin-bottom: 5px; }
+    header p { opacity: 0.9; font-size: 1rem; }
     
-    /* Navigasi Tombol Menu */
+    /* Navigasi Menu */
     nav {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 25px;
       flex-wrap: wrap;
     }
@@ -41,24 +46,36 @@
       background: white;
       border: 2px solid #ff008a;
       color: #ff008a;
-      padding: 10px 20px;
-      border-radius: 25px;
+      padding: 12px 24px;
+      border-radius: 30px;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.95rem;
       transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     nav button.active, nav button:hover {
       background: #ff008a;
       color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(255, 0, 138, 0.2);
     }
     
-    .container { max-width: 900px; margin: 0 auto; }
-    
-    /* Sistem Menyembunyikan Halaman (SPA) */
-    .page { display: none; }
+    /* Sistem Halaman SPA (Single Page Application) */
+    .page { display: none; animation: fadeIn 0.4s ease; }
     .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Kotak Indikator Harga Naik/Turun */
+    /* Komponen Card Umum */
+    .card-full {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+
+    /* Kotak Indikator Saham/Tren Harga */
     .trending-box {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -68,28 +85,29 @@
     .trend-card { 
       background: white; 
       padding: 15px; 
-      border-radius: 10px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+      border-radius: 12px; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
       text-align: center;
+      border: 1px solid #eaeaea;
     }
     .up { color: #2e7d32; font-weight: bold; }
     .down { color: #c62828; font-weight: bold; }
     
-    /* Input Form & Kolom Search */
+    /* Input Form & Kolom Pencarian */
+    .search-container { text-align: center; margin-bottom: 25px; }
     input[type="text"], select, input[type="number"] {
       width: 100%;
       padding: 12px 20px;
       font-size: 16px;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #e2e8f0;
       border-radius: 25px;
       outline: none;
-      margin-top: 5px;
+      margin-top: 6px;
+      transition: border-color 0.3s;
     }
-    input[type="text"]:focus, select:focus, input[type="number"]:focus {
-      border-color: #ff008a;
-    }
+    input[type="text"]:focus, select:focus, input[type="number"]:focus { border-color: #ff008a; }
     
-    /* Grid Card Item */
+    /* Grid List Item */
     .item-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -97,83 +115,85 @@
     }
     .item {
       background: white;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.04);
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: all 0.2s ease;
       border: 1px solid #eaeaea;
     }
-    .item:hover { transform: translateY(-5px); }
+    .item:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); border-color: #ff008a; }
+    .item h3 { font-size: 1.05rem; margin-bottom: 8px; color: #222; }
+    
+    /* Harga & Konversi Locks */
     .price { font-weight: bold; color: #2e7d32; font-size: 1.2rem; }
-    .converted-price { font-size: 0.85rem; color: #666; font-style: italic; }
+    .converted-price { font-size: 0.85rem; color: #718096; font-style: italic; margin-top: 4px; }
     
-    /* Tampilan Halaman/Card Penuh */
-    .card-full {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    .form-group { margin-bottom: 15px; }
+    /* Form & Tombol Submit */
+    .form-group { margin-bottom: 18px; }
+    .form-group label { font-weight: 600; color: #4a5568; font-size: 0.95rem; }
     .btn-submit {
-      background: #ff008a; color: white; border: none; padding: 12px;
+      background: #ff008a; color: white; border: none; padding: 14px;
       border-radius: 25px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px;
+      font-size: 1rem; transition: background 0.2s;
     }
+    .btn-submit:hover { background: #bc0066; }
     
-    /* Manekin Kostum */
+    /* Layout Set Simulator */
+    .outfit-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    @media(max-width: 650px) { .outfit-layout, .trending-box { grid-template-columns: 1fr; } }
     .mannequin {
-      background: #eee; border-radius: 12px; padding: 20px;
-      display: flex; flex-direction: column; gap: 10px; align-items: center;
+      background: #edf2f7; border-radius: 14px; padding: 25px;
+      display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center;
+      border: 2px dashed #cbd5e0;
     }
     .slot {
-      background: white; width: 90%; padding: 10px; text-align: center;
-      border-radius: 8px; border: 1px dashed #ff008a; font-size: 0.9rem;
+      background: white; width: 100%; padding: 12px; text-align: center;
+      border-radius: 10px; border: 1px dashed #ff008a; font-size: 0.9rem; font-weight: 500;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>PITO 7</h1>
-    <p>Growtopia Ultimate Hub — Mengelola Harga & Strategi Profit</p>
-  </header>
-
   <div class="container">
+    <header>
+      <h1>PITO 7</h1>
+      <p>Growtopia Ultimate Hub — Mengelola Harga & Strategi Profit</p>
+    </header>
     
     <nav>
-      <button class="nav-btn active" onclick="bukaHalaman('database')">🔍 Database Harga</button>
-      <button class="nav-btn" onclick="bukaHalaman('profit')">💸 Kalkulator Profit</button>
-      <button class="nav-btn" onclick="bukaHalaman('report')">📢 Laporkan Harga</button>
-      <button class="nav-btn" onclick="bukaHalaman('outfit')">👕 Set Simulator</button>
+      <button class="nav-btn active" onclick="pindahHalaman('database')">🔍 Database Harga</button>
+      <button class="nav-btn" onclick="pindahHalaman('profit')">💸 Kalkulator Profit</button>
+      <button class="nav-btn" onclick="pindahHalaman('report')">📢 Laporkan Harga</button>
+      <button class="nav-btn" onclick="pindahHalaman('outfit')">👕 Set Simulator</button>
     </nav>
 
     <div id="databasePage" class="page active">
       <div class="trending-box">
         <div class="trend-card">
-          <span class="up">🚀 Kenaikan Tertinggi</span>
-          <p id="infoNaik" style="margin-top:5px; font-weight:600;">Menghitung...</p>
+          <span class="up">🚀 Kenaikan Tertinggi (Gainer)</span>
+          <p id="teksInfoNaik" style="margin-top:5px; font-weight:600; color:#2d3748;">Menghitung...</p>
         </div>
         <div class="trend-card">
-          <span class="down">📉 Penurunan Terparah</span>
-          <p id="infoTurun" style="margin-top:5px; font-weight:600;">Menghitung...</p>
+          <span class="down">📉 Penurunan Terparah (Loser)</span>
+          <p id="teksInfoTurun" style="margin-top:5px; font-weight:600; color:#2d3748;">Menghitung...</p>
         </div>
       </div>
 
-      <div style="text-align:center; margin-bottom:25px;">
-        <input type="text" id="kolomCari" placeholder="Ketik nama item di sini...">
+      <div class="search-container">
+        <input type="text" id="inputCariItem" placeholder="Ketik nama item Growtopia yang dicari...">
       </div>
 
-      <div class="item-grid" id="tempatGridItem"></div>
+      <div class="item-grid" id="containerGridItem"></div>
 
-      <div id="panelDetail" class="card-full" style="display:none; margin-top:20px;">
-        <button onclick="tutupDetail()" style="padding:6px 15px; cursor:pointer; margin-bottom:15px;">← Kembali</button>
+      <div id="panelDetailItem" class="card-full" style="display:none; margin-top:20px;">
+        <button onclick="kembaliKeGrid()" style="padding:6px 16px; cursor:pointer; margin-bottom:15px; border-radius:20px; border:1px solid #ccc; background:#fff; font-weight:600;">← Kembali</button>
         <h2 id="judulDetail"></h2>
-        <p class="price" id="hargaDetail" style="margin: 5px 0 15px 0;"></p>
+        <p class="price" id="hargaDetail" style="margin: 6px 0 15px 0;"></p>
         
-        <div style="height:200px; margin-bottom:20px;">
-          <canvas id="grafikHarga"></canvas>
+        <div style="height:220px; position: relative; margin-bottom:20px;">
+          <canvas id="grafikLineHarga"></canvas>
         </div>
       </div>
     </div>
@@ -181,34 +201,34 @@
     <div id="profitPage" class="page">
       <div class="card-full">
         <h2>Kalkulator Break Block</h2>
-        <p style="color:#666; margin-bottom:20px;">Hitung estimasi pengeluaran modal vs keuntungan Gems.</p>
+        <p style="color:#666; margin-bottom:20px;">Kalkulasi perbandingan modal membeli block dengan hasil keuntungan Gems.</p>
         
         <div class="form-group">
           <label>Pilih Jenis Block:</label>
-          <select id="pilihanBlock" onchange="hitungProfit()">
-            <option value="100">Fish Tank Block (Pasar: 100/WL)</option>
-            <option value="20">Chandelier Block (Pasar: 20/WL)</option>
+          <select id="selectJenisBlock" onchange="hitungSistemProfit()">
+            <option value="100">Fish Tank Block (Harga: 100/WL)</option>
+            <option value="20">Chandelier Block (Harga: 20/WL)</option>
           </select>
         </div>
         <div class="form-group">
           <label>Jumlah Pasokan Block:</label>
-          <input type="number" id="jumlahBlock" value="2000" oninput="hitungProfit()">
+          <input type="number" id="inputJumlahBlock" value="2000" oninput="hitungSistemProfit()">
         </div>
         
-        <div id="hasilKalkulator" style="margin-top:20px; padding:15px; background:#f9f9f9; border-radius:8px; line-height:1.6;"></div>
+        <div id="boxHasilKalkulator" style="margin-top:20px; padding:18px; background:#f7fafc; border-radius:12px; line-height:1.7; border-left: 5px solid #ff008a;"></div>
       </div>
     </div>
 
     <div id="reportPage" class="page">
       <div class="card-full">
-        <h2>Laporkan Harga Terbaru di World</h2>
-        <p style="color:#666; margin-bottom:20px;">Menemukan harga baru saat trade? Bagikan ke komunitas!</p>
+        <h2>Laporkan Harga Pasar Terbaru</h2>
+        <p style="color:#666; margin-bottom:20px;">Melihat harga item naik atau anjlok saat *trade*? Laporkan agar database web tetap akurat!</p>
         
-        <form onsubmit="kirimLaporan(event)">
-          <div class="form-group"><label>Nama Barang:</label><input type="text" id="lapBarang" placeholder="Contoh: Angel Wings" required></div>
-          <div class="form-group"><label>Harga Baru:</label><input type="text" id="lapHarga" placeholder="Contoh: 3400/WL" required></div>
-          <div class="form-group"><label>Ketemu di World:</label><input type="text" id="lapWorld" placeholder="Contoh: BUYANGEL" required></div>
-          <button type="submit" class="btn-submit">Kirim ke Admin</button>
+        <form onsubmit="prosesKirimLaporan(event)">
+          <div class="form-group"><label>Nama Item / Barang:</label><input type="text" id="formNamaBarang" placeholder="Contoh: Devil Wings" required></div>
+          <div class="form-group"><label>Harga Berlaku Saat Ini:</label><input type="text" id="formHargaBaru" placeholder="Contoh: 4900/WL" required></div>
+          <div class="form-group"><label>Lokasi Transaksi (Nama World):</label><input type="text" id="formNamaWorld" placeholder="Contoh: BUYDEVIL" required></div>
+          <button type="submit" class="btn-submit">Kirim Laporan Harga</button>
         </form>
       </div>
     </div>
@@ -216,33 +236,33 @@
     <div id="outfitPage" class="page">
       <div class="card-full">
         <h2>Set Outfit Price Simulator</h2>
-        <p style="color:#666; margin-bottom:20px;">Pasang item kesukaanmu dan lihat berapa total biaya WL-nya.</p>
+        <p style="color:#666; margin-bottom:20px;">Rancang kostum impian karaktermu dan hitung total modal saldo WL yang wajib disiapkan.</p>
         
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div class="outfit-layout">
           <div class="mannequin">
-            <div class="slot" id="slotTopi">Topi: Kosong</div>
-            <div class="slot" id="slotSayap">Sayap: Kosong</div>
+            <div class="slot" id="labelSlotTopi">Topi/Rambut: Belum Memilih</div>
+            <div class="slot" id="labelSlotSayap">Aksesoris Sayap: Belum Memilih</div>
           </div>
           <div>
             <div class="form-group">
-              <label>Pilih Rambut/Topi:</label>
-              <select id="pilihTopi" onchange="updateSetBaju()">
+              <label>Pilih Rambut / Topi:</label>
+              <select id="dropdownTopi" onchange="kalkulasiTotalSetBaju()">
                 <option value="0">Tanpa Topi (0 WL)</option>
                 <option value="120">Fedora Hat (120 WL)</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Pilih Sayap:</label>
-              <select id="pilihSayap" onchange="updateSetBaju()">
+              <label>Pilih Sayap (Back Item):</label>
+              <select id="dropdownSayap" onchange="kalkulasiTotalSetBaju()">
                 <option value="0">Tanpa Sayap (0 WL)</option>
                 <option value="3500">Angel Wings (3,500 WL)</option>
                 <option value="5000">Devil Wings (5,000 WL)</option>
               </select>
             </div>
-            <div style="margin-top:25px;">
-              <h3>Total Pengeluaran Set:</h3>
-              <span id="totalBiayaSet" class="price">0 WL</span>
-              <p id="konversiBiayaSet" class="converted-price"></p>
+            <div style="margin-top:30px; padding-top:15px; border-top:1px solid #edf2f7;">
+              <h3 style="font-size:1.1rem; color:#4a5568;">Total Biaya Belanja Set:</h3>
+              <span id="angkaTotalSet" class="price">0 WL</span>
+              <p id="labelKonversiSet" class="converted-price"></p>
             </div>
           </div>
         </div>
@@ -252,169 +272,173 @@
   </div>
 
   <script>
-    // --- DATABASE UTAMA ITEM ---
-    // Di sini kamu bisa ubah 'price' (harga hari ini) & 'lastPrice' (harga kemarin) buat tes grafik naik/turun
-    const databaseItem = [
-      { name: "Wooden Platform Seed", price: 70, lastPrice: 65, trend: [60, 65, 70] },
-      { name: "Fish Tank Block", price: 100, lastPrice: 100, trend: [100, 100, 100] },
-      { name: "Lava Seed", price: 200, lastPrice: 220, trend: [240, 220, 200] },
-      { name: "Angel Wings", price: 3500, lastPrice: 3300, trend: [3200, 3300, 3500] }
+    // DATA MODEL UTAMA (Silakan ganti angka price & lastPrice untuk simulasi tren harga)
+    const dataBarangGrowtopia = [
+      { name: "Wooden Platform Seed", price: 70, lastPrice: 65, trend: [60, 63, 65, 70] },
+      { name: "Fish Tank Block", price: 100, lastPrice: 100, trend: [100, 100, 100, 100] },
+      { name: "Lava Seed", price: 200, lastPrice: 220, trend: [235, 230, 220, 200] },
+      { name: "Angel Wings", price: 3500, lastPrice: 3300, trend: [3100, 3250, 3300, 3500] }
     ];
 
-    let variabelGrafik;
-    let dataTerfilterSaatIni = [...databaseItem];
+    let objekGrafikChartJS = null;
+    let dataTerfilterAktif = [...dataBarangGrowtopia];
 
-    // --- ALAT BANTU 1: Fungsi Auto Konversi WL -> DL -> BGL ---
-    function bikinKonversiKunci(totalWL) {
-      if (totalWL >= 10000) {
-        let bgl = Math.floor(totalWL / 10000);
-        let dl = Math.floor((totalWL % 10000) / 100);
-        let wl = totalWL % 100;
-        return `Estimasi: ${bgl} BGL, ${dl} DL, ${wl} WL`;
-      } else if (totalWL >= 100) {
-        let dl = Math.floor(totalWL / 100);
-        let wl = totalWL % 100;
-        return `Estimasi: ${dl} DL, ${wl} WL`;
+    // --- LOGIKA 1: Konversi Mata Uang Lock Otomatis (WL -> DL -> BGL) ---
+    function formatMataUangLocks(jumlahWL) {
+      if (jumlahWL >= 10000) {
+        let bgl = Math.floor(jumlahWL / 10000);
+        let dl = Math.floor((jumlahWL % 10000) / 100);
+        let wl = jumlahWL % 100;
+        return `Setara: ${bgl} BGL, ${dl} DL, ${wl} WL`;
+      } else if (jumlahWL >= 100) {
+        let dl = Math.floor(jumlahWL / 100);
+        let wl = jumlahWL % 100;
+        return `Setara: ${dl} DL, ${wl} WL`;
       }
       return '';
     }
 
-    // --- ALAT BANTU 2: Fungsi Pindah Halaman Tanpa Reload ---
-    function bukaHalaman(namaHalaman) {
-      // Sembunyikan semua halaman
-      document.querySelectorAll('.page').forEach(h => h.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    // --- LOGIKA 2: Navigasi Ganti Menu Halaman Tanpa Reload Halaman ---
+    function pindahHalaman(idTarget) {
+      // Sembunyikan seluruh container page
+      document.querySelectorAll('.page').forEach(halaman => halaman.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(tombol => tombol.classList.remove('active'));
       
-      // Tampilkan halaman pilihan
-      document.getElementById(`${namaHalaman}Page`).classList.add('active');
+      // Munculkan target halaman yang di-klik user
+      document.getElementById(`${idTarget}Page`).classList.add('active');
       event.target.classList.add('active');
       
-      if(namaHalaman === 'database') { tutupDetail(); }
+      // Jika balik ke menu utama, pastikan menutup panel detail item agar grid kelihatan kembali
+      if(idTarget === 'database') { kembaliKeGrid(); }
     }
 
-    // --- ALAT BANTU 3: Analisis Siapa yang Naik/Turun ---
-    function hitungTrendingMelesat() {
-      let palingNaik = databaseItem.reduce((max, item) => (item.price - item.lastPrice) > (max.price - max.lastPrice) ? item : max, databaseItem[0]);
-      let palingTurun = databaseItem.reduce((min, item) => (item.price - item.lastPrice) < (min.price - min.lastPrice) ? item : min, databaseItem[0]);
+    // --- LOGIKA 3: Detektor Otomatis Item Paling Naik & Paling Turun ---
+    function analisaTrendingPasar() {
+      let itemPalingNaik = dataBarangGrowtopia.reduce((max, item) => (item.price - item.lastPrice) > (max.price - max.lastPrice) ? item : max, dataBarangGrowtopia[0]);
+      let itemPalingTurun = dataBarangGrowtopia.reduce((min, item) => (item.price - item.lastPrice) < (min.price - min.lastPrice) ? item : min, dataBarangGrowtopia[0]);
 
-      let selisihNaik = palingNaik.price - palingNaik.lastPrice;
-      let selisihTurun = palingTurun.price - palingTurun.lastPrice;
+      let selisihNaik = itemPalingNaik.price - itemPalingNaik.lastPrice;
+      let selisihTurun = itemPalingTurun.price - itemPalingTurun.lastPrice;
 
-      document.getElementById('infoNaik').textContent = `${palingNaik.name} (+${selisihNaik} WL)`;
-      document.getElementById('infoTurun').textContent = `${palingTurun.name} (${selisihTurun} WL)`;
+      document.getElementById('teksInfoNaik').textContent = `${itemPalingNaik.name} (+${selisihNaik} WL)`;
+      document.getElementById('teksInfoTurun').textContent = `${itemPalingTurun.name} (${selisihTurun} WL)`;
     }
 
-    // --- FITUR DATABASE: Memunculkan Data ke Grid ---
-    function renderGridDatabase(arrayData) {
-      dataTerfilterSaatIni = arrayData;
-      const tempatGrid = document.getElementById("tempatGridItem");
+    // --- LOGIKA 4: Menampilkan Daftar Card Item ke Menu Grid Utama ---
+    function gambarGridDatabase(dataArray) {
+      dataTerfilterAktif = dataArray;
+      const tempatGrid = document.getElementById("containerGridItem");
       tempatGrid.innerHTML = '';
       
-      if(arrayData.length === 0) {
-        tempatGrid.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#888;">Item tidak ada di database.</p>`;
+      if(dataArray.length === 0) {
+        tempatGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #a0aec0; padding: 20px;">Item tidak ditemukan di sistem database.</p>`;
         return;
       }
 
-      arrayData.forEach((item, index) => {
-        const kotakCard = document.createElement("div");
-        kotakCard.className = "item";
-        kotakCard.innerHTML = `
+      dataArray.forEach((item, index) => {
+        const cardItem = document.createElement("div");
+        cardItem.className = "item";
+        cardItem.innerHTML = `
           <h3>${item.name}</h3>
           <p class="price">${item.price} WL</p>
-          <p class="converted-price">${bikinKonversiKunci(item.price)}</p>
+          <p class="converted-price">${formatMataUangLocks(item.price)}</p>
         `;
-        kotakCard.onclick = () => bukaDetailItem(index);
-        tempatGrid.appendChild(kotakCard);
+        cardItem.onclick = () => bukaHalamanDetailItem(index);
+        tempatGrid.appendChild(cardItem);
       });
     }
 
-    // --- FITUR DATABASE: Membuka Grafik Detail ---
-    function bukaDetailItem(index) {
-      const item = dataTerfilterSaatIni[index];
+    // --- LOGIKA 5: Menampilkan Grafik Riwayat Saat Card Item Di-klik ---
+    function bukaHalamanDetailItem(index) {
+      const item = dataTerfilterAktif[index];
       
-      document.getElementById("kolomCari").style.display = 'none';
-      document.getElementById("tempatGridItem").style.display = 'none';
-      document.getElementById("panelDetail").style.display = 'block';
+      // Manipulasi UI: Sembunyikan Grid, Munculkan Panel Detail Grafik
+      document.getElementById("inputCariItem").style.display = 'none';
+      document.getElementById("containerGridItem").style.display = 'none';
+      document.getElementById("panelDetailItem").style.display = 'block';
       
       document.getElementById("judulDetail").textContent = item.name;
-      document.getElementById("hargaDetail").textContent = `Harga Pasar: ${item.price} WL`;
+      document.getElementById("hargaDetail").textContent = `Harga Terkini: ${item.price} WL`;
 
-      // Menggambar Grafik Tren Pakai Chart.js
-      const tempatKanvas = document.getElementById('grafikHarga').getContext('2d');
-      if (variabelGrafik) variabelGrafik.destroy(); // Hapus grafik lama agar tidak tumpang tindih
+      // Gambar data line chart memakai library Chart.js
+      const areaKanvas = document.getElementById('grafikLineHarga').getContext('2d');
+      if (objekGrafikChartJS) objekGrafikChartJS.destroy(); // Hancurkan grafik lama biar memori bersih
       
-      variabelGrafik = new Chart(tempatKanvas, {
+      objekGrafikChartJS = new Chart(areaKanvas, {
         type: 'line',
         data: {
-          labels: item.trend.map((_, i) => `Check ${i+1}`),
+          labels: item.trend.map((_, i) => `Cek ${i+1}`),
           datasets: [{
-            label: 'Tren WL',
+            label: 'Riwayat Harga (WL)',
             data: item.trend,
             borderColor: '#ff008a',
-            tension: 0.2,
-            fill: false
+            backgroundColor: 'rgba(255, 0, 138, 0.05)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.2
           }]
         },
         options: { responsive: true, maintainAspectRatio: false }
       });
     }
 
-    function tutupDetail() {
-      document.getElementById("panelDetail").style.display = 'none';
-      document.getElementById("kolomCari").style.display = 'inline-block';
-      document.getElementById("tempatGridItem").style.display = 'grid';
+    function kembaliKeGrid() {
+      document.getElementById("panelDetailItem").style.display = 'none';
+      document.getElementById("inputCariItem").style.display = 'inline-block';
+      document.getElementById("containerGridItem").style.display = 'grid';
     }
 
-    // --- FITUR 2: Logika Kalkulator Profit Break ---
-    function hitungProfit() {
-      const rasioWL = parseInt(document.getElementById("pilihanBlock").value);
-      const totalBlock = parseInt(document.getElementById("jumlahBlock").value) || 0;
+    // --- LOGIKA 6: Sistem Hitung Matematika Kalkulator Profit Break ---
+    function hitungSistemProfit() {
+      const hargaPerWl = parseInt(document.getElementById("selectJenisBlock").value);
+      const inputJumlah = parseInt(document.getElementById("inputJumlahBlock").value) || 0;
       
-      let modalAwalWL = totalBlock / rasioWL;
-      let dapatGems = totalBlock * 1.5; // Angka perkiraan rata-rata gems/block
-      let untungKeWL = dapatGems / 2000; // Asumsi beli pack di shop: 2000 gems = 1 WL
+      let modalAwalWL = inputJumlah / hargaPerWl;
+      let taksiranGems = inputJumlah * 1.5; // Prediksi rata-rata gems per hancurin 1 block
+      let hasilKonversiWL = taksiranGems / 2000; // Asumsi belanja pack di shop game: 2000 gems = 1 WL
       
-      document.getElementById("hasilKalkulator").innerHTML = `
-        <b>Pengeluaran Modal:</b> ${modalAwalWL.toFixed(1)} WL <br>
-        <b>Gems yang Didapat:</b> ${dapatGems.toLocaleString()} Gems <br>
-        <b>Jika Dijadikan WL Lagi:</b> ±${untungKeWL.toFixed(1)} WL
+      document.getElementById("boxHasilKalkulator").innerHTML = `
+        <strong>💰 Modal Awal Pembelian:</strong> ${modalAwalWL.toFixed(1)} WL<br>
+        <strong>💎 Estimasi Drop Gems:</strong> ${taksiranGems.toLocaleString()} Gems<br>
+        <strong>🔄 Jika Dijadikan WL Kembali (Beli Pack):</strong> ±${hasilKonversiWL.toFixed(1)} WL
       `;
     }
 
-    // --- FITUR 3: Form Laporan Tombol Kirim ---
-    function kirimLaporan(event) {
-      event.preventDefault();
-      alert("Laporan berhasil dikirim! Admin akan memverifikasi di world target.");
+    // --- LOGIKA 7: Form Aksi Submit Laporan Harga Baru ---
+    function prosesKirimLaporan(e) {
+      e.preventDefault();
+      alert("Laporan harga baru sukses terkirim ke server PITO 7! Tim admin akan segera mengecek ke world bersangkutan untuk validasi pasar.");
       document.querySelector("#reportPage form").reset();
     }
 
-    // --- FITUR 4: Set Simulator Baju ---
-    function updateSetBaju() {
-      const hargaTopi = parseInt(document.getElementById("pilihTopi").value);
-      const hargaSayap = parseInt(document.getElementById("pilihSayap").value);
+    // --- LOGIKA 8: Penghitungan Biaya pada Simulator Set Baju ---
+    function kalkulasiTotalSetBaju() {
+      const modalTopi = parseInt(document.getElementById("dropdownTopi").value);
+      const modalSayap = parseInt(document.getElementById("dropdownSayap").value);
       
-      const tDropdown = document.getElementById("pilihTopi");
-      const sDropdown = document.getElementById("pilihSayap");
+      const refTopi = document.getElementById("dropdownTopi");
+      const refSayap = document.getElementById("dropdownSayap");
       
-      document.getElementById("slotTopi").textContent = `Topi: ${tDropdown.options[tDropdown.selectedIndex].text}`;
-      document.getElementById("slotSayap").textContent = `Sayap: ${sDropdown.options[sDropdown.selectedIndex].text}`;
+      document.getElementById("labelSlotTopi").textContent = `Topi: ${refTopi.options[refTopi.selectedIndex].text}`;
+      document.getElementById("labelSlotSayap").textContent = `Sayap: ${refSayap.options[refSayap.selectedIndex].text}`;
       
-      let totalBeli = hargaTopi + hargaSayap;
-      document.getElementById("totalBiayaSet").textContent = `${totalBeli.toLocaleString()} WL`;
-      document.getElementById("konversiBiayaSet").textContent = bikinKonversiKunci(totalBeli);
+      let grandTotalWL = modalTopi + modalSayap;
+      document.getElementById("angkaTotalSet").textContent = `${grandTotalWL.toLocaleString()} WL`;
+      document.getElementById("labelKonversiSet").textContent = formatMataUangLocks(grandTotalWL);
     }
 
-    // --- INPUT EVENT: Fitur Pencarian ---
-    document.getElementById("kolomCari").addEventListener("input", (e) => {
-      const kataKunci = e.target.value.toLowerCase();
-      const hasilFilter = databaseItem.filter(item => item.name.toLowerCase().includes(kataKunci));
-      renderGridDatabase(hasilFilter);
+    // --- ENGINE INPUT EVENT: Real-time Live Filter Search Bar ---
+    document.getElementById("inputCariItem").addEventListener("input", (e) => {
+      const kataKunciSistem = e.target.value.toLowerCase();
+      const hasilFilterBarang = dataBarangGrowtopia.filter(barang => barang.name.toLowerCase().includes(kataKunciSistem));
+      gambarGridDatabase(hasilFilterBarang);
     });
 
-    // --- MENJALANKAN FUNGSI DEFAULT SAAT WEB DIBUKA ---
-    hitungTrendingMelesat();
-    renderGridDatabase(databaseItem);
-    hitungProfit();
+    // --- INISIALISASI UTAMA (Berjalan Otomatis Saat Browser Selesai Load) ---
+    analisaTrendingPasar();
+    gambarGridDatabase(dataBarangGrowtopia);
+    hitungSistemProfit();
   </script>
 </body>
-</html>
+                  </html>
+                  
